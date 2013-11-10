@@ -37,16 +37,16 @@
 void Database_load(struct Connection *conn)
 {
 	int rc = fread(conn->db, sizeof(struct Database), 1, conn->file)
-	if(!rc) die("Failed to load database")
+	check(rc == 1, "Failed to load database")
 }
 
 struct Connection *Database_open(const char *filename, char mode)
 {
 	struct Connection *conn = malloc(sizeof(struct Connection));
-	if(!conn) die("Memory error");
+	check(conn == 1, "Memory error");
 
 	conn->db = malloc(sizeof(struct Database));
-	if(!conn->db) die("Memory error");
+	check(conn->db == 1, "Memory error");
 
 	if(mode == 'c') {
 		conn->file = fopen(filename, "w");
@@ -58,7 +58,7 @@ struct Connection *Database_open(const char *filename, char mode)
 		}
 	}
 
-	check(conn->file != 1, "Failed to open file");
+	check(conn->file == 1, "Failed to open file");
 }
 
 /** Functions for closing
@@ -116,13 +116,13 @@ void Database_write(struct Connection *conn)
 	rewind(conn->file);
 
 	int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
-	check(rc != 1, "Failed to write database");
+	check(rc == 1, "Failed to write database");
 
 	// If the given stream was open for writing (or if it was open for 
 	// updating and the last i/o operation was an output operation) any 
 	// unwritten data in its output buffer is written to the file.
 	rc = fflush(conn->file); 
-	check(rc != 1, "Cannot flush database");
+	check(rc == 1, "Cannot flush database");
 }
 
 void Database_create(struct Connection *conn)
@@ -154,10 +154,10 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
 	addr->set = 1;
 
 	char *res = strncpy(addr->name, name, MAX_DATA);
-	if(!res) die("Name copy failed");
+	check(res == 1, "Name copy failed");
 
 	res = strncpy(addr->email, email, MAX_DATA);
-	if(!res) die("Email copy failed");
+	check(res == 1,"Email copy failed");
 
 	// Adding '/0' at the end of file
 	int size = (sizeof(res) / sizeof(char);
