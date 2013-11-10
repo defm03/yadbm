@@ -177,7 +177,7 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
 
 	// Adding '/0' at the end of file
 	int size = (sizeof(res) / sizeof(char);
-	char res[size+1] = '/0';
+	char res[size+1] = "/0";
 }
 
 void Database_get(struct Connection *conn, int id)
@@ -213,7 +213,35 @@ int main(int argc, char const *argv[])
 	int id = 0;
 
 	if(argc > 3) id = atoi(argv[3]);
-	if(id >= MAX_ROWS) die ("There's not that many records.")
+	if(id >= MAX_ROWS) die ("There's not that many records.");
+
+	switch(action) {
+		case 'c':
+			Database_create(conn);
+			Database_write(conn);
+			break;
+		case 'g':
+			if(argc != 4) die("Need id to get");
+			Database_get(conn, id);
+			break;
+		case 's':
+			if(argc != 6) die("Need id, name, email to set");
+			Database_set(conn, id, argv[4], argv[5]);
+			Database_write(conn);
+			break;
+		case 'd':
+			if(argc != 4) die("Need id to delete");
+			Database_delete(conn, id);
+			Database_write(conn);
+			break;
+		case 'l':
+			Database_list(conn);
+			break;
+		default:
+			die("Invalid action, only: c=create, g=get, s=set, d=del, l=list");
+	}
+
+	Database_close(conn);
 
 	return 0;
 }
