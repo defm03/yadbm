@@ -233,16 +233,16 @@ int main(int argc, char const *argv[])
 			Database_write(conn);
 			break;
 		case 'g':
-			if(argc != 4) die("Need id to get");
+			check(argc != 4, "Need id to get");
 			Database_get(conn, id);
 			break;
 		case 's':
-			if(argc != 6) die("Need id, name, email to set");
+			check(argc != 6, "Need id, name, email to set");
 			Database_set(conn, id, argv[4], argv[5]);
 			Database_write(conn);
 			break;
 		case 'd':
-			if(argc != 4) die("Need id to delete");
+			check(argc != 4, "Need id to delete");
 			Database_delete(conn, id);
 			Database_write(conn);
 			break;
