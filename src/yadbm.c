@@ -46,6 +46,17 @@ struct Connection
 	struct Database *db;
 };
 
+// Extern for functions to prevent errors
+extern void Database_delete(struct, int);
+extern void Database_get(struct, int);
+extern void Database_set(struct, int, const char, const char);
+extern void Database_create(struct);
+extern void Database_write(struct);
+extern void Database_list(struct);
+extern void Database_print(struct);
+extern void Database_close(struct);
+extern void die(const char);
+
 /** Functions for loading
  * Loading database -> opening file and allocation of whole database into  
  * memory with handlers for errors. 
