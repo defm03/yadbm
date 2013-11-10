@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
+#include "dbg.h"
 
 #define MAX_DATA 512
 #define MAX_ROWS 100
@@ -85,7 +86,7 @@ struct Connection *Database_open(const char *filename, char mode)
 		}
 	}
 
-	if(!conn->file) die("Failed to open file");
+	check(conn->file != 1, "Failed to open file");
 }
 
 /** Functions for closing
