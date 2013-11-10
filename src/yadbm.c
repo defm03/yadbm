@@ -144,13 +144,13 @@ void Database_write(struct Connection *conn)
 	rewind(conn->file);
 
 	int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
-	if(rc != 1) die("Failed to write database");
+	check(rc != 1, "Failed to write database");
 
 	// If the given stream was open for writing (or if it was open for 
 	// updating and the last i/o operation was an output operation) any 
 	// unwritten data in its output buffer is written to the file.
 	rc = fflush(conn->file); 
-	if(rc != 1) die("Cannot flush database");
+	check(rc != 1, "Cannot flush database");
 }
 
 void Database_create(struct Connection *conn)
@@ -217,7 +217,7 @@ void Database_delete(struct Connection *conn, int id)
 
 int main(int argc, char const *argv[])
 {
-	if(argc < 3) die("USAGE: mudbm <dbfile> <action> [action params]");
+	check(argc < 3, "USAGE: mudbm <dbfile> <action> [action params]");
 
 	char *filename = argv[1];
 	char action = argv[2][0];
@@ -225,7 +225,7 @@ int main(int argc, char const *argv[])
 	int id = 0;
 
 	if(argc > 3) id = atoi(argv[3]);
-	if(id >= MAX_ROWS) die ("There's not that many records.");
+	check(id >= MAX_ROWS, "There's not that many records.");
 
 	switch(action) {
 		case 'c':
