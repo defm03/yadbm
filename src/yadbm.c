@@ -33,7 +33,7 @@
  */
 int Database_load(struct Connection *conn)
 {
-	int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
+    int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
     check_mem(rc);
     check_debug(rc, "Failed to load database");
     return 0;
@@ -44,10 +44,12 @@ error:
 struct Connection *Database_open(const char *filename, char mode)
 {
 	struct Connection *conn = malloc(sizeof(struct Connection));
-	check_debug(conn, "Memory error");
+	check_mem(conn);
+    check_debug(conn, "Memory error");
 
 	conn->db = malloc(sizeof(struct Database));
-	check_debug(conn->db, "Memory error");
+	check_mem(conn);
+    check_debug(conn->db, "Memory error");
 
 	if(mode == 'c') {
 		conn->file = fopen(filename, "w");
@@ -100,7 +102,7 @@ void Database_list(struct Connection *conn)
 {
 	int i = 0;
 	struct Database *db = conn->db;
-	for (int i = 0; i < MAX_ROWS; i++) {
+	for (i = 0; i < MAX_ROWS; i++) {
 		struct Address *cur = &db->rows[i];
 
 		if(cur->set) {
