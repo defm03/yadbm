@@ -22,33 +22,35 @@
 #ifndef __yadbm_h__
 #define __yadbm_h__
 
+#define MAX_DATA 512
+#define MAX_ROWS 100
+
 // Basic structs to work with.
 struct Address {
 	int id;
 	int set;
 	char name[MAX_DATA];
-	char email[MAX_DATA]
+	char email[MAX_DATA];
 };
 
 struct Database {
 	struct Address rows[MAX_ROWS];
 };
 
-struct Connection
-{
+struct Connection {
 	FILE *file;
 	struct Database *db;
 };
 
 // Extern for functions to prevent errors
-extern void Database_delete(struct, int);
-extern void Database_get(struct, int);
-extern void Database_set(struct, int, const char, const char);
-extern void Database_create(struct);
-extern void Database_write(struct);
-extern void Database_list(struct);
-extern void Database_print(struct);
-extern void Database_close(struct);
-extern void die(const char);
+extern void Database_delete(struct Connection *conn, int id);
+extern void Database_get(struct Connection *conn, int id);
+extern void Database_set(struct Connection *conn, int id, const char *name, const char *email);
+extern void Database_create(struct Connection *conn);
+extern void Database_write(struct Connection *conn);
+extern void Database_list(struct Connection *conn);
+extern void Address_print(struct Address *addr)
+extern void Database_close(struct Connection *conn);
+extern void die(const char *message);
 
 #endif

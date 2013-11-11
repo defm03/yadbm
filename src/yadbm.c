@@ -27,17 +27,14 @@
 #include "dbg.h"
 #include "yadbm.h"
 
-#define MAX_DATA 512
-#define MAX_ROWS 100
-
 /** Functions for loading
- * Loading database -> opening file and allocation of whole database into  
- * memory with handlers for errors. 
+ * Loading database -> opening file and allocation of whole database into
+ * memory with handlers for errors.
  */
 void Database_load(struct Connection *conn)
 {
-	int rc = fread(conn->db, sizeof(struct Database), 1, conn->file)
-	check(rc == 1, "Failed to load database")
+	int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
+	check(rc == 1, "Failed to load database");
 }
 
 struct Connection *Database_open(const char *filename, char mode)
@@ -106,22 +103,22 @@ void Database_list(struct Connection *conn)
 }
 
 /** Functions for creating
- * Creating and writing database with error handlers. 
+ * Creating and writing database with error handlers.
  */
 
 void Database_write(struct Connection *conn)
 {
-	// Sets the position indicator associated with stream to the 
+	// Sets the position indicator associated with stream to the
 	// beginning of the file.
 	rewind(conn->file);
 
 	int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
 	check(rc == 1, "Failed to write database");
 
-	// If the given stream was open for writing (or if it was open for 
-	// updating and the last i/o operation was an output operation) any 
+	// If the given stream was open for writing (or if it was open for
+	// updating and the last i/o operation was an output operation) any
 	// unwritten data in its output buffer is written to the file.
-	rc = fflush(conn->file); 
+	rc = fflush(conn->file);
 	check(rc == 1, "Cannot flush database");
 }
 
@@ -131,7 +128,7 @@ void Database_create(struct Connection *conn)
 
 	for (int i = 0; i < MAX_ROWS; i++)
 	{
-		// Make a prototype to initialize it 
+		// Make a prototype to initialize it
 		struct Address addr = {.id = i .set = 0};
 		// And assigning it
 		conn->db->rows[i] = addr;
@@ -139,17 +136,17 @@ void Database_create(struct Connection *conn)
 }
 
 /** Set and get database
- * Setting database rows up - filling them with given data. Error 
+ * Setting database rows up - filling them with given data. Error
  * handling included. There may be some problems with strncpy; as you
- * can see - there's small code at the end to add '/0' at the EOF - 
+ * can see - there's small code at the end to add '/0' at the EOF -
  * it should be changed later.
  */
 
 void Database_set(struct Connection *conn, int id, const char *name, const char *email)
 {
 	struct Address *addr = &conn->db->rows[id];
-	
-	// If there is already record on that row, program will end 
+
+	// If there is already record on that row, program will end
 	if(addr->set) die("Already set, delete it first");
 	addr->set = 1;
 
@@ -183,7 +180,7 @@ void Database_delete(struct Connection *conn, int id)
 }
 
 /** Main loop
- * There is small, silly args parser inside.  
+ * There is small, silly args parser inside.
  * @USAGE: mudbm <dbfile> <action> [action params]
  */
 
