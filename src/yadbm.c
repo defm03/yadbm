@@ -144,7 +144,7 @@ void Database_create(struct Connection *conn)
 	for (i = 0; i < MAX_ROWS; i++)
 	{
 		// Make a prototype to initialize it
-		struct Address addr = {.id = i .set = 0};
+		struct Address addr = {.id = i, .set = 0};
 		// And assigning it
 		conn->db->rows[i] = addr;
 	}
@@ -157,7 +157,7 @@ void Database_create(struct Connection *conn)
  * it should be changed later.
  */
 
-void Database_set(struct Connection *conn, int id, const char *name, const char *email)
+int Database_set(struct Connection *conn, int id, const char *name, const char *email)
 {
 	struct Address *addr = &conn->db->rows[id];
 
@@ -166,14 +166,21 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
 	addr->set = 1;
 
 	char *res = strncpy(addr->name, name, MAX_DATA);
-	check(res == 1, "Name copy failed");
+	check_debug(res, "Name copy failed");
 
 	res = strncpy(addr->email, email, MAX_DATA);
-	check(res == 1,"Email copy failed");
+	check_debug(res, "Email copy failed");
 
+    /*
 	// Adding '/0' at the end of file
-	int size = (sizeof(res) / sizeof(char);
+	int size = (sizeof(res) / sizeof(char));
 	char res[size+1] = "/0";
+    */
+
+    return 0;
+error:
+    if(res) free(res);
+    return -1;
 }
 
 void Database_get(struct Connection *conn, int id)
@@ -209,7 +216,7 @@ int main(int argc, char const *argv[])
 	int id = 0;
 
 	if(argc > 3) id = atoi(argv[3]);
-	check(id >= MAX_ROWS, "There's not that many records.");
+	check_debug(id >= MAX_ROWS, "There's not that many records.");
 
 	switch(action) {
 		case 'c':
@@ -240,4 +247,6 @@ int main(int argc, char const *argv[])
 	Database_close(conn);
 
 	return 0;
+error:
+    return -1;
 }

@@ -46,7 +46,7 @@ struct Connection {
 extern int Database_load(struct Connection *conn);
 extern void Database_delete(struct Connection *conn, int id);
 extern void Database_get(struct Connection *conn, int id);
-extern void Database_set(struct Connection *conn, int id, const char *name, const char *email);
+extern int Database_set(struct Connection *conn, int id, const char *name, const char *email);
 extern void Database_create(struct Connection *conn);
 extern int Database_write(struct Connection *conn);
 extern void Database_list(struct Connection *conn);
