@@ -34,7 +34,6 @@
 int Database_load(struct Connection *conn)
 {
     int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
-    check_mem(rc);
     check_debug(rc, "Failed to load database");
     return 0;
 error:
@@ -206,9 +205,9 @@ void Database_delete(struct Connection *conn, int id)
  * @USAGE: mudbm <dbfile> <action> [action params]
  */
 
-int main(int argc, char const *argv[])
+int main(int argc, char *argv[])
 {
-	check(argc < 3, "USAGE: mudbm <dbfile> <action> [action params]");
+	if(argc < 3) die("USAGE: mudbm <dbfile> <action> [action params]");
 
 	char *filename = argv[1];
 	char action = argv[2][0];
@@ -216,7 +215,7 @@ int main(int argc, char const *argv[])
 	int id = 0;
 
 	if(argc > 3) id = atoi(argv[3]);
-	check_debug(id >= MAX_ROWS, "There's not that many records.");
+    if(id >= MAX_ROWS) die("There's not that many records.");
 
 	switch(action) {
 		case 'c':
