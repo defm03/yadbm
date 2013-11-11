@@ -34,7 +34,7 @@
 int Database_load(struct Connection *conn)
 {
     int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
-    check_debug(rc, "Failed to load database");
+    check_debug(!rc, "Failed to load database");
     return 0;
 error:
     return -1;
@@ -223,16 +223,16 @@ int main(int argc, char *argv[])
 			Database_write(conn);
 			break;
 		case 'g':
-			check(argc != 4, "Need id to get");
+			if(argc != 4) die("Need id to get");
 			Database_get(conn, id);
 			break;
 		case 's':
-			check(argc != 6, "Need id, name, email to set");
+			if(argc != 6) die("Need id, name, email to set");
 			Database_set(conn, id, argv[4], argv[5]);
 			Database_write(conn);
 			break;
 		case 'd':
-			check(argc != 4, "Need id to delete");
+			if(argc != 4) die("Need id to delete");
 			Database_delete(conn, id);
 			Database_write(conn);
 			break;
