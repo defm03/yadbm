@@ -31,19 +31,23 @@
  * Loading database -> opening file and allocation of whole database into
  * memory with handlers for errors.
  */
-void Database_load(struct Connection *conn)
+int Database_load(struct Connection *conn)
 {
 	int rc = fread(conn->db, sizeof(struct Database), 1, conn->file);
-	check(rc == 1, "Failed to load database");
+    check_mem(rc);
+    check_debug(rc, "Failed to load database");
+    return 0;
+error:
+    return -1;
 }
 
 struct Connection *Database_open(const char *filename, char mode)
 {
 	struct Connection *conn = malloc(sizeof(struct Connection));
-	check(conn == 1, "Memory error");
+	check_debug(conn, "Memory error");
 
 	conn->db = malloc(sizeof(struct Database));
-	check(conn->db == 1, "Memory error");
+	check_debug(conn->db, "Memory error");
 
 	if(mode == 'c') {
 		conn->file = fopen(filename, "w");
@@ -55,7 +59,10 @@ struct Connection *Database_open(const char *filename, char mode)
 		}
 	}
 
-	check(conn->file == 1, "Failed to open file");
+	check_debug(conn->file, "Failed to open file");
+error:
+   if(conn->db) free(conn->db);
+   if(conn->file) fclose(conn->file);
 }
 
 /** Functions for closing
@@ -126,7 +133,7 @@ void Database_create(struct Connection *conn)
 {
 	int i = 0;
 
-	for (int i = 0; i < MAX_ROWS; i++)
+	for (i = 0; i < MAX_ROWS; i++)
 	{
 		// Make a prototype to initialize it
 		struct Address addr = {.id = i .set = 0};

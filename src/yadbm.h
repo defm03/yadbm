@@ -49,7 +49,7 @@ extern void Database_set(struct Connection *conn, int id, const char *name, cons
 extern void Database_create(struct Connection *conn);
 extern void Database_write(struct Connection *conn);
 extern void Database_list(struct Connection *conn);
-extern void Address_print(struct Address *addr)
+extern void Address_print(struct Address *addr);
 extern void Database_close(struct Connection *conn);
 extern void die(const char *message);
 
