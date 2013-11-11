@@ -115,20 +115,26 @@ void Database_list(struct Connection *conn)
  * Creating and writing database with error handlers.
  */
 
-void Database_write(struct Connection *conn)
+int Database_write(struct Connection *conn)
 {
 	// Sets the position indicator associated with stream to the
 	// beginning of the file.
 	rewind(conn->file);
 
 	int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
-	check(rc == 1, "Failed to write database");
+	check_mem(rc);
+    check_debug(rc, "Failed to write database");
 
 	// If the given stream was open for writing (or if it was open for
 	// updating and the last i/o operation was an output operation) any
 	// unwritten data in its output buffer is written to the file.
 	rc = fflush(conn->file);
-	check(rc == 1, "Cannot flush database");
+	check_mem(rc);
+    check_debug(rc, "Cannot flush database");
+
+    return 0;
+error:
+    return -1;
 }
 
 void Database_create(struct Connection *conn)
